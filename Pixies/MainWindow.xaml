@@ -1,0 +1,86 @@
+﻿<Window x:Class="Pixies.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Pixies"
+        mc:Ignorable="d"
+        Title="Pixies" Height="350" Width="525">
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="New"/>
+                <MenuItem Header="Open"/>
+                <Separator/>
+                <MenuItem Header="Export">
+                    <MenuItem Header=".blend"/>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Preferences"/>
+                <Separator/>
+                <MenuItem Header="Exit"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="Documentation"/>
+                <MenuItem Header="About"/>
+            </MenuItem>
+        </Menu>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <ListBox x:Name="LstBoxLayers">
+                    <ListBoxItem Content="Layer 1"/>
+                    <ListBoxItem Content="Layer 2"/>
+                    <ListBoxItem Content="Layer 3"/>
+                    <ListBoxItem Content="Layer 4"/>
+                </ListBox>
+
+                <StackPanel
+                    Grid.Row="1"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+
+                    <Button
+                        Grid.Row="1">
+                        <Image
+                            Source="Resources/NewLayerBlank.png"
+                            Width="24"
+                            Height="24"/>
+                    </Button>
+
+                    <Button
+                        Grid.Row="1">
+                        <Image
+                            Source="Resources/NewLayerFile.png"
+                            Width="24"
+                            Height="24"/>
+                    </Button>
+
+                    <Button
+                        Grid.Row="1">
+                        <Image
+                            Source="Resources/DeleteLayer.png"
+                            Width="24"
+                            Height="24"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <Grid
+                Grid.Column="1"
+                x:Name="GridContext"
+                Background="Gray"/>
+        </Grid>
+    </DockPanel>
+</Window>
