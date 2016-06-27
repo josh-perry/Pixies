@@ -80,7 +80,8 @@
 
                     <Button
                         Grid.Row="1"
-                        ToolTip="Delete the selected layer.">
+                        ToolTip="Delete the selected layer."
+                        Click="DeleteLayer_Click">
                         <Image
                             Source="Resources/DeleteLayer.png"
                             Width="24"

@@ -13,6 +13,9 @@
             get; set;
         }
 
+        /// <summary>
+        /// Z-ordering of the layer.
+        /// </summary>
         public int ZLevel
         {
             get; set;

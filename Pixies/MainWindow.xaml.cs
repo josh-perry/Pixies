@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,7 +11,11 @@ namespace Pixies
     public partial class MainWindow : Window
     {
         Workspace Workspace;
-        
+
+        #region Constructors
+        /// <summary>
+        /// Constructor. Set up binding and sorting properties.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -19,16 +24,7 @@ namespace Pixies
             LstBoxLayers.ItemsSource = Workspace.Project.Layers;
             LstBoxLayers.Items.SortDescriptions.Add(new SortDescription("ZLevel", ListSortDirection.Descending));
         }
-
-        /// <summary>
-        /// Click handler for new blank layer button.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NewBlankLayer_Click(object sender, RoutedEventArgs e)
-        {
-            AddBlankLayer();
-        }
+        #endregion
 
         /// <summary>
         /// Add an empty layer to the current project.
@@ -41,6 +37,36 @@ namespace Pixies
         }
 
         /// <summary>
+        /// Delete the selected layer.
+        /// </summary>
+        private void DeleteLayer()
+        {
+            Layer selectedLayer = (Layer) LstBoxLayers.SelectedValue;
+            Workspace.Project.Layers.Remove(selectedLayer);
+        }
+
+        #region UI Event Handlers
+        /// <summary>
+        /// Click handler for new blank layer button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewBlankLayer_Click(object sender, RoutedEventArgs e)
+        {
+            AddBlankLayer();
+        }
+
+        /// <summary>
+        /// Click handler for delete selected layer button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteLayer_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteLayer();
+        }
+
+        /// <summary>
         /// Selection changed event on layer list.
         /// </summary>
         /// <param name="sender"></param>
@@ -50,5 +76,6 @@ namespace Pixies
             ListBox listbox = (ListBox) sender;
             Layer selectedLayer = (Layer) listbox.SelectedValue;
         }
+        #endregion
     }
 }
