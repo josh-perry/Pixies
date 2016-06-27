@@ -43,7 +43,6 @@ namespace Pixies.Exporters
                         generatedPython.AppendLine($"mat.diffuse_color = ({pixel.R}, {pixel.G}, {pixel.B})");
                         generatedPython.AppendLine($"mat.diffuse_shader = \'TOON\'");
                         generatedPython.AppendLine($"c = bpy.ops.mesh.primitive_cube_add(location = ({x}, {y}, {z}), radius=({CubeSize / 2}))");
-                        generatedPython.AppendLine("bpy.ops.object.mode_set(mode=\'EDIT\')");
                         generatedPython.AppendLine($"bpy.context.object.data.materials.append(mat)");
                         generatedPython.AppendLine("####");
                     }
@@ -51,8 +50,6 @@ namespace Pixies.Exporters
 
                 z += CubeSize;
             }
-
-            generatedPython.AppendLine("bpy.ops.object.mode_set(mode=\'OBJECT\')");
 
             generatedPython.AppendLine("for ob in bpy.context.scene.objects:");
             generatedPython.AppendLine("    if ob.type == 'MESH':");
