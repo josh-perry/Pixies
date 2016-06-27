@@ -8,7 +8,9 @@
         Title="Pixies" Height="350" Width="525">
 
     <DockPanel>
+        <!--Top menu bar-->
         <Menu DockPanel.Dock="Top">
+            <!--File-->
             <MenuItem Header="File">
                 <MenuItem Header="New"/>
                 <MenuItem Header="Open"/>
@@ -21,18 +23,22 @@
                 <Separator/>
                 <MenuItem Header="Exit"/>
             </MenuItem>
+            
+            <!--Help-->
             <MenuItem Header="Help">
                 <MenuItem Header="Documentation"/>
                 <MenuItem Header="About"/>
             </MenuItem>
         </Menu>
         
+        <!--Main 2 column layout-->
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
+            <!-- Layer edit buttons -->
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -52,7 +58,8 @@
                     Orientation="Horizontal">
 
                     <Button
-                        Grid.Row="1">
+                        Grid.Row="1"
+                        ToolTip="Create a new blank layer.">
                         <Image
                             Source="Resources/NewLayerBlank.png"
                             Width="24"
@@ -60,7 +67,8 @@
                     </Button>
 
                     <Button
-                        Grid.Row="1">
+                        Grid.Row="1"
+                        ToolTip="Create a layer from a file.">
                         <Image
                             Source="Resources/NewLayerFile.png"
                             Width="24"
@@ -68,7 +76,8 @@
                     </Button>
 
                     <Button
-                        Grid.Row="1">
+                        Grid.Row="1"
+                        ToolTip="Delete the selected layer.">
                         <Image
                             Source="Resources/DeleteLayer.png"
                             Width="24"
@@ -77,6 +86,7 @@
                 </StackPanel>
             </Grid>
 
+            <!--Image preview window-->
             <Grid
                 Grid.Column="1"
                 x:Name="GridContext"
