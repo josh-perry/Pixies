@@ -38,20 +38,22 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Layer edit buttons -->
+            <!-- Layer bar -->
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
-                <ListBox x:Name="LstBoxLayers">
-                    <ListBoxItem Content="Layer 1"/>
-                    <ListBoxItem Content="Layer 2"/>
-                    <ListBoxItem Content="Layer 3"/>
-                    <ListBoxItem Content="Layer 4"/>
+
+                <!-- Layers list -->
+                <ListBox
+                    x:Name="LstBoxLayers"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding Workspace.Project.Layers}"
+                    SelectionChanged="LstBoxLayers_SelectionChanged">
                 </ListBox>
 
+                <!-- Layer edit buttons -->
                 <StackPanel
                     Grid.Row="1"
                     HorizontalAlignment="Right"
@@ -59,7 +61,8 @@
 
                     <Button
                         Grid.Row="1"
-                        ToolTip="Create a new blank layer.">
+                        ToolTip="Create a new blank layer."
+                        Click="NewBlankLayer_Click">
                         <Image
                             Source="Resources/NewLayerBlank.png"
                             Width="24"
