@@ -113,6 +113,10 @@ namespace Pixies
             }
         }
 
+        /// <summary>
+        /// Updates the preview image to show the current layer.
+        /// </summary>
+        /// <param name="layer"></param>
         private void UpdateImagePreview(Layer layer)
         {
             var uri = Path.Combine(Workspace.Project.FullPath, layer.Filename);
@@ -162,6 +166,12 @@ namespace Pixies
             Layer selectedLayer = (Layer) listbox.SelectedValue;
 
             UpdateImagePreview(selectedLayer);
+        }
+
+        private void ExportBlend_Click(object sender, RoutedEventArgs e)
+        {
+            var blenderExporter = new Exporters.Blend();
+            blenderExporter.Export(Workspace.Project);
         }
         #endregion
     }

@@ -16,7 +16,9 @@
                 <MenuItem Header="Open"/>
                 <Separator/>
                 <MenuItem Header="Export">
-                    <MenuItem Header=".blend"/>
+                    <MenuItem
+                        Header=".blend"
+                        Click="ExportBlend_Click"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Preferences"/>
@@ -97,7 +99,9 @@
                 x:Name="GridContext"
                 Background="Gray">
 
-                <Image x:Name="ImagePreview"/>
+                <Image
+                    x:Name="ImagePreview"
+                    RenderOptions.BitmapScalingMode="NearestNeighbor"/>
             </Grid>
         </Grid>
     </DockPanel>

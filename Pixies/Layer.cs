@@ -19,5 +19,10 @@
         /// Image filename.
         /// </summary>
         public string Filename { get; set; }
+
+        /// <summary>
+        /// Full path to file.
+        /// </summary>
+        public string FullFilePath { get; set; }
     }
 }
