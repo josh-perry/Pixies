@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace Pixies
 {
@@ -37,11 +40,42 @@ namespace Pixies
         }
 
         /// <summary>
+        /// Add a new layer from a file to the current project.
+        /// </summary>
+        private void AddFileLayer()
+        {
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
+
+            if (!openFileDialog.ShowDialog() == true)
+                return;
+
+            var filename = Path.GetFileName(openFileDialog.FileName);
+
+            File.Copy(openFileDialog.FileName, Path.Combine(Workspace.Project.FullPath, filename));
+
+            var zLayer = Workspace.Project.Layers.Count;
+            var layer = new Layer
+            {
+                Name = filename,
+                ZLevel = zLayer,
+                Filename = filename
+            };
+
+            Workspace.Project.Layers.Add(layer);
+        }
+
+        /// <summary>
         /// Delete the selected layer.
         /// </summary>
         private void DeleteLayer()
         {
-            Layer selectedLayer = (Layer)LstBoxLayers.SelectedValue;
+            var selectedLayer = (Layer)LstBoxLayers.SelectedValue;
+
+            if(selectedLayer == null)
+            {
+                return;
+            }
 
             if (!DeleteLayerConfirmation(selectedLayer))
             {
@@ -79,6 +113,13 @@ namespace Pixies
             }
         }
 
+        private void UpdateImagePreview(Layer layer)
+        {
+            var uri = Path.Combine(Workspace.Project.FullPath, layer.Filename);
+
+            ImagePreview.Source = new BitmapImage(new Uri(uri));
+        }
+
         #region UI Event Handlers
         /// <summary>
         /// Click handler for new blank layer button.
@@ -88,6 +129,16 @@ namespace Pixies
         private void NewBlankLayer_Click(object sender, RoutedEventArgs e)
         {
             AddBlankLayer();
+        }
+
+        /// <summary>
+        /// Click handler for new file layer button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewFileLayer_Click(object sender, RoutedEventArgs e)
+        {
+            AddFileLayer();
         }
 
         /// <summary>
@@ -109,6 +160,8 @@ namespace Pixies
         {
             ListBox listbox = (ListBox) sender;
             Layer selectedLayer = (Layer) listbox.SelectedValue;
+
+            UpdateImagePreview(selectedLayer);
         }
         #endregion
     }

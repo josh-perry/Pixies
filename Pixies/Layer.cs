@@ -8,17 +8,16 @@
         /// <summary>
         /// Name of the layer.
         /// </summary>
-        public string Name
-        {
-            get; set;
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// Z-ordering of the layer.
         /// </summary>
-        public int ZLevel
-        {
-            get; set;
-        }
+        public int ZLevel { get; set; }
+
+        /// <summary>
+        /// Image filename.
+        /// </summary>
+        public string Filename { get; set; }
     }
 }

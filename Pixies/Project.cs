@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace Pixies
 {
@@ -9,32 +10,29 @@ namespace Pixies
     public class Project
     {
         /// <summary>
+        /// Constructor. Initializes layer list. Creates temp directory.
+        /// </summary>
+        public Project()
+        {
+            Layers = new ObservableCollection<Layer>();
+
+            FullPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(FullPath);
+        }
+
+        /// <summary>
         /// Name of the project.
         /// </summary>
-        public string Name
-        {
-            get; set;
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// Directory hosting the project.
         /// </summary>
-        public string Path
-        {
-            get; set;
-        }
+        public string FullPath { get; set; }
 
         /// <summary>
         /// A list of Layers.
         /// </summary>
-        public ObservableCollection<Layer> Layers
-        {
-            get; set;
-        }
-
-        public Project()
-        {
-            Layers = new ObservableCollection<Layer>();
-        }
+        public ObservableCollection<Layer> Layers { get; set; }
     }
 }

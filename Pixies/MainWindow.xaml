@@ -71,7 +71,8 @@
 
                     <Button
                         Grid.Row="1"
-                        ToolTip="Create a layer from a file.">
+                        ToolTip="Create a layer from a file."
+                        Click="NewFileLayer_Click">
                         <Image
                             Source="Resources/NewLayerFile.png"
                             Width="24"
@@ -94,7 +95,10 @@
             <Grid
                 Grid.Column="1"
                 x:Name="GridContext"
-                Background="Gray"/>
+                Background="Gray">
+
+                <Image x:Name="ImagePreview"/>
+            </Grid>
         </Grid>
     </DockPanel>
 </Window>
