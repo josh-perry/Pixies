@@ -41,8 +41,42 @@ namespace Pixies
         /// </summary>
         private void DeleteLayer()
         {
-            Layer selectedLayer = (Layer) LstBoxLayers.SelectedValue;
+            Layer selectedLayer = (Layer)LstBoxLayers.SelectedValue;
+
+            if (!DeleteLayerConfirmation(selectedLayer))
+            {
+                return;
+            }
+
             Workspace.Project.Layers.Remove(selectedLayer);
+        }
+
+        /// <summary>
+        /// Show dialog box asking to confirm deletion
+        /// </summary>
+        /// <param name="layer">Layer to delete</param>
+        /// <returns>true if we should delete it, false otherwise.</returns>
+        private bool DeleteLayerConfirmation(Layer layer)
+        {
+            if(Properties.Settings.Default.NeverAskForDeleteConfirmation)
+            {
+                return true;
+            }
+
+            var message = $"Are you sure you want to delete layer '{layer.Name}'?";
+            var title = "Pixies";
+
+            var result = MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Information);
+
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    return true;
+                case MessageBoxResult.No:
+                case MessageBoxResult.Cancel:
+                default:
+                    return false;
+            }
         }
 
         #region UI Event Handlers
