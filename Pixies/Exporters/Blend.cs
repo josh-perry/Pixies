@@ -3,32 +3,32 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Text;
 
 namespace Pixies.Exporters
 {
     public class Blend : IExporter
     {
-        public const int CubeSize = 2;
+        public const float CubeSize = 0.1f;
         public const int MinAlpha = 1;
 
         public bool Export(Project project)
         {
-            int x, y, z = 0;
-            var generatedPython = String.Empty;
+            float x, y, z = 0;
 
-            generatedPython += "import bpy\n";
+            var generatedPython = new StringBuilder();
 
-            var materials = new HashSet<string>();
+            generatedPython.Append("import bpy\n");
 
-            foreach(var layer in project.Layers)
+            foreach (var layer in project.Layers)
             {
                 var img = new Bitmap(Path.Combine(project.FullPath, layer.Filename));
 
-                for (int i = 0; i < img.Width; i++)
+                for (var i = 0; i < img.Width; i++)
                 {
                     x = i * CubeSize;
 
-                    for (int j = 0; j < img.Height; j++)
+                    for (var j = 0; j < img.Height; j++)
                     {
                         y = j * CubeSize;
 
@@ -39,20 +39,29 @@ namespace Pixies.Exporters
 
                         var materialName = pixel.R.ToString() + pixel.G.ToString() + pixel.B.ToString() + pixel.A.ToString();
 
-                        generatedPython += $"mat = bpy.data.materials.new(\"Mat_{materialName}\")\n";
-                        generatedPython += $"mat.diffuse_color = (float(255 * {pixel.R}), float(255 * {pixel.G}), float(255 * {pixel.B}))\n";
-                        generatedPython += $"c = bpy.ops.mesh.primitive_cube_add(location = ({x}, {y}, {z}), radius=({CubeSize / 2}))\n";
-                        generatedPython += $"bpy.context.object.data.materials.append(mat)\n";
-                        generatedPython += "####\n";
+                        generatedPython.Append($"mat = bpy.data.materials.new(\"Mat_{materialName}\")\n");
+                        generatedPython.Append($"mat.diffuse_color = ({pixel.R}, {pixel.G}, {pixel.B})\n");
+                        generatedPython.Append($"mat.diffuse_shader = \'TOON\'\n");
+                        generatedPython.Append($"c = bpy.ops.mesh.primitive_cube_add(location = ({x}, {y}, {z}), radius=({CubeSize / 2}))\n");
+                        generatedPython.Append($"bpy.context.object.data.materials.append(mat)\n");
+                        generatedPython.Append("####\n");
                     }
                 }
 
                 z += CubeSize;
             }
+            
+            generatedPython.Append("for ob in bpy.context.scene.objects:\n");
+            generatedPython.Append("    if ob.type == 'MESH':\n");
+            generatedPython.Append("        ob.select = True\n");
+            generatedPython.Append("        bpy.context.scene.objects.active = ob\n");
+            generatedPython.Append("    else:\n");
+            generatedPython.Append("        ob.select = False\n");
+            generatedPython.AppendLine();
+            generatedPython.Append("bpy.ops.object.join()\n");
+            generatedPython.Append($"bpy.ops.wm.save_as_mainfile(filepath=\"output.blend\")");
 
-            generatedPython += $"bpy.ops.wm.save_as_mainfile(filepath=\"output.blend\")";
-
-            var pythonFile = WritePythonToFile(generatedPython);
+            var pythonFile = WritePythonToFile(generatedPython.ToString());
             RunBlenderJob(pythonFile);
 
             return true;
@@ -81,10 +90,9 @@ namespace Pixies.Exporters
             startInfo.UseShellExecute = false;
 
             var process = Process.Start(startInfo);
-            var stderr = process.StandardError.ReadToEnd();
-            var stdout = process.StandardOutput.ReadToEnd();
-
-            process.WaitForExit();
+            
+            //var stderr = process.StandardError.ReadToEnd();
+            //var stdout = process.StandardOutput.ReadToEnd();
         }
     }
 }
