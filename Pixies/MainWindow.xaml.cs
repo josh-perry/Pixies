@@ -102,15 +102,7 @@ namespace Pixies
 
             var result = MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Information);
 
-            switch (result)
-            {
-                case MessageBoxResult.Yes:
-                    return true;
-                case MessageBoxResult.No:
-                case MessageBoxResult.Cancel:
-                default:
-                    return false;
-            }
+            return result == MessageBoxResult.Yes;
         }
 
         /// <summary>
@@ -119,6 +111,12 @@ namespace Pixies
         /// <param name="layer"></param>
         private void UpdateImagePreview(Layer layer)
         {
+            if (String.IsNullOrEmpty(layer.Filename))
+            {
+                ImagePreview.Source = null;
+                return;
+            }
+
             var uri = Path.Combine(Workspace.Project.FullPath, layer.Filename);
 
             ImagePreview.Source = new BitmapImage(new Uri(uri));
@@ -165,13 +163,27 @@ namespace Pixies
             ListBox listbox = (ListBox) sender;
             Layer selectedLayer = (Layer) listbox.SelectedValue;
 
+            if (selectedLayer == null)
+                return;
+
             UpdateImagePreview(selectedLayer);
         }
 
+        /// <summary>
+        /// Click handler to export .blend files
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ExportBlend_Click(object sender, RoutedEventArgs e)
         {
+            var openFileDialog = new SaveFileDialog();
+            openFileDialog.Filter = "Blender files (*.blend) | *.blend;";
+
+            if (!openFileDialog.ShowDialog() == true)
+                return;
+
             var blenderExporter = new Exporters.Blend();
-            blenderExporter.Export(Workspace.Project);
+            blenderExporter.Export(Workspace.Project, openFileDialog.FileName);
         }
         #endregion
     }

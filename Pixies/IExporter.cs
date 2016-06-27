@@ -4,6 +4,6 @@ namespace Pixies
 {
     interface IExporter
     {
-        bool Export(Project project);
+        bool Export(Project project, string path);
     }
 }

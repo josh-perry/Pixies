@@ -12,13 +12,13 @@ namespace Pixies.Exporters
         public const float CubeSize = 0.1f;
         public const int MinAlpha = 1;
 
-        public bool Export(Project project)
+        public bool Export(Project project, string path)
         {
             float x, y, z = 0;
 
             var generatedPython = new StringBuilder();
 
-            generatedPython.Append("import bpy\n");
+            generatedPython.AppendLine("import bpy");
 
             foreach (var layer in project.Layers)
             {
@@ -39,30 +39,34 @@ namespace Pixies.Exporters
 
                         var materialName = pixel.R.ToString() + pixel.G.ToString() + pixel.B.ToString() + pixel.A.ToString();
 
-                        generatedPython.Append($"mat = bpy.data.materials.new(\"Mat_{materialName}\")\n");
-                        generatedPython.Append($"mat.diffuse_color = ({pixel.R}, {pixel.G}, {pixel.B})\n");
-                        generatedPython.Append($"mat.diffuse_shader = \'TOON\'\n");
-                        generatedPython.Append($"c = bpy.ops.mesh.primitive_cube_add(location = ({x}, {y}, {z}), radius=({CubeSize / 2}))\n");
-                        generatedPython.Append($"bpy.context.object.data.materials.append(mat)\n");
-                        generatedPython.Append("####\n");
+                        generatedPython.AppendLine($"mat = bpy.data.materials.new(\"Mat_{materialName}\")");
+                        generatedPython.AppendLine($"mat.diffuse_color = ({pixel.R}, {pixel.G}, {pixel.B})");
+                        generatedPython.AppendLine($"mat.diffuse_shader = \'TOON\'");
+                        generatedPython.AppendLine($"c = bpy.ops.mesh.primitive_cube_add(location = ({x}, {y}, {z}), radius=({CubeSize / 2}))");
+                        generatedPython.AppendLine("bpy.ops.object.mode_set(mode=\'EDIT\')");
+                        generatedPython.AppendLine($"bpy.context.object.data.materials.append(mat)");
+                        generatedPython.AppendLine("####");
                     }
                 }
 
                 z += CubeSize;
             }
-            
-            generatedPython.Append("for ob in bpy.context.scene.objects:\n");
-            generatedPython.Append("    if ob.type == 'MESH':\n");
-            generatedPython.Append("        ob.select = True\n");
-            generatedPython.Append("        bpy.context.scene.objects.active = ob\n");
-            generatedPython.Append("    else:\n");
-            generatedPython.Append("        ob.select = False\n");
+
+            generatedPython.AppendLine("bpy.ops.object.mode_set(mode=\'OBJECT\')");
+
+            generatedPython.AppendLine("for ob in bpy.context.scene.objects:");
+            generatedPython.AppendLine("    if ob.type == 'MESH':");
+            generatedPython.AppendLine("        ob.select = True");
+            generatedPython.AppendLine("        bpy.context.scene.objects.active = ob");
+            generatedPython.AppendLine("    else:");
+            generatedPython.AppendLine("        ob.select = False");
             generatedPython.AppendLine();
-            generatedPython.Append("bpy.ops.object.join()\n");
-            generatedPython.Append($"bpy.ops.wm.save_as_mainfile(filepath=\"output.blend\")");
+            generatedPython.AppendLine("bpy.ops.object.join()");
+            generatedPython.AppendLine();
+            generatedPython.AppendLine($"bpy.ops.wm.save_as_mainfile(filepath=\"output.blend\")");
 
             var pythonFile = WritePythonToFile(generatedPython.ToString());
-            RunBlenderJob(pythonFile);
+            RunBlenderJob(pythonFile, path);
 
             return true;
         }
@@ -76,23 +80,24 @@ namespace Pixies.Exporters
             return path;
         }
 
-        private void RunBlenderJob(string pythonFile)
+        private void RunBlenderJob(string pythonFile, string path)
         {
-            File.Delete("output.blend");
-
-            File.Copy("empty.blend", "output.blend");
+            File.Delete(path);
+            File.Copy("empty.blend", path);
 
             var startInfo = new ProcessStartInfo();
             startInfo.FileName = "blender.exe";
-            startInfo.Arguments = $"output.blend --background --python {pythonFile}";
+            startInfo.Arguments = $"{path} --background --python {pythonFile}";
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = true;
             startInfo.UseShellExecute = false;
 
             var process = Process.Start(startInfo);
             
-            //var stderr = process.StandardError.ReadToEnd();
-            //var stdout = process.StandardOutput.ReadToEnd();
+            var stderr = process.StandardError.ReadToEnd();
+            var stdout = process.StandardOutput.ReadToEnd();
+
+            process.WaitForExit();
         }
     }
 }
