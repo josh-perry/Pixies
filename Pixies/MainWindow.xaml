@@ -17,8 +17,11 @@
                 <Separator/>
                 <MenuItem Header="Export">
                     <MenuItem
-                        Header=".blend"
+                        Header="Blender (.blend)"
                         Click="ExportBlend_Click"/>
+                    <MenuItem
+                        Header="Waveform obj (.obj)"
+                        Click="ExportObj_Click"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Preferences"/>

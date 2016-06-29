@@ -185,6 +185,18 @@ namespace Pixies
             var blenderExporter = new Exporters.Blend();
             blenderExporter.Export(Workspace.Project, openFileDialog.FileName);
         }
+
+        private void ExportObj_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new SaveFileDialog();
+            openFileDialog.Filter = "Waveform obj files (*.obj) | *.obj;";
+
+            if (!openFileDialog.ShowDialog() == true)
+                return;
+
+            var objExporter = new Exporters.ObjExport();
+            objExporter.Export(Workspace.Project, openFileDialog.FileName);
+        }
         #endregion
     }
 }
