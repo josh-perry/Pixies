@@ -19,10 +19,14 @@ namespace Pixies.Exporters
             obj.FaceList = new List<Face>();
             obj.TextureList = new List<TextureVertex>();
 
+            var header = new List<string>();
+
             float x, y, z = 0;
 
             foreach (var layer in project.Layers)
             {
+                header.Add(layer.Name);
+
                 var img = new Bitmap(Path.Combine(project.FullPath, layer.Filename));
 
                 for (var i = 0; i < img.Width; i++)
@@ -40,14 +44,19 @@ namespace Pixies.Exporters
                         
                         // Add cube
                         CreateCube(ref obj, x, y, z, CubeSize);
+                        
                     }
                 }
 
                 z += CubeSize;
             }
 
+            header.Add("");
+            header.Add($"Verts: {obj.VertexList.Count}");
+            header.Add($"Faces: {obj.FaceList.Count}");
+
             File.Delete(path);
-            obj.WriteObjFile(path);
+            obj.WriteObjFile(path, header.ToArray());
 
             return true;
         }
